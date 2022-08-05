@@ -4,7 +4,7 @@ shopt -s extglob
 SHELL_FOLDER=$(dirname $(readlink -f "$0"))
 bash $SHELL_FOLDER/../common/kernel_5.15.sh
 	
-rm -rf package/boot/uboot-envtools package/firmware/ipq-wifi package/firmware/ath11k* package/kernel/mac80211 package/qca package/qat
+rm -rf package/boot/uboot-envtools package/firmware/ipq-wifi package/firmware/ath11k* package/kernel/mac80211 package/qca package/qat target/linux/generic
 
 svn export --force https://github.com/Boos4721/openwrt/trunk/package/boot/uboot-envtools package/boot/uboot-envtools
 svn export --force https://github.com/Boos4721/openwrt/trunk/package/firmware/ipq-wifi package/firmware/ipq-wifi
@@ -14,8 +14,6 @@ svn export --force https://github.com/Boos4721/openwrt/trunk/package/qca package
 svn export --force https://github.com/Boos4721/openwrt/trunk/package/qat package/qat
 
 svn export --force https://github.com/Boos4721/openwrt/trunk/package/boot/uboot-envtools package/boot/uboot-envtools
-svn co https://github.com/Boos4721/openwrt/trunk/target/linux/ipq807x target/linux/ipq807x
-svn co https://github.com/Boos4721/openwrt/trunk/target/linux/generic/pending-5.15 target/linux/generic/pending-5.15
 curl -sfL https://raw.githubusercontent.com/Boos4721/openwrt/master/package/kernel/linux/modules/netsupport.mk -o package/kernel/linux/modules/netsupport.mk
 curl -sfL https://raw.githubusercontent.com/Lstions/openwrt-boos/master/target/linux/ipq807x/patches-5.15/608-5.15-qca-nss-ssdk-delete-fdb-entry-using-netdev -o target/linux/ipq807x/patches-5.15/608-5.15-qca-nss-ssdk-delete-fdb-entry-using-netdev.patch
 
@@ -26,14 +24,12 @@ function git_sparse_clone() (
 		  git checkout $commitid
           git sparse-checkout init --cone
           git sparse-checkout set $@
-          mv -n $@ ../
-          cd ..
-          rm -rf $localdir
           )
 
-git_sparse_clone 6ae0b47c024869f14ef85d140060eacd5a868b1e "https://github.com/Boos4721/openwrt" "bmac80211" package/kernel/mac80211
-mv -f mac80211 package/kernel/
-
+git_sparse_clone 1f6a1e0d872d373d904cd4c16dec87ac3c03a042 "https://github.com/Boos4721/openwrt" "boos" target/linux/ipq807x target/linux/generic include/kernel-5.15.mk
+cp -rf boos/target/linux/ipq807x target/linux/
+cp -rf boos/target/linux/generic target/linux/
+cp -rf boos/include/kernel-5.15.mk include/kernel-5.15
 
 sed -i 's/DEFAULT_PACKAGES +=/DEFAULT_PACKAGES += luci-app-turboacc/' target/linux/ipq807x/Makefile
 
