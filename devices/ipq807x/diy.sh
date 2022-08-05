@@ -15,7 +15,6 @@ svn export --force https://github.com/Boos4721/openwrt/trunk/package/qat package
 
 svn export --force https://github.com/Boos4721/openwrt/trunk/package/boot/uboot-envtools package/boot/uboot-envtools
 curl -sfL https://raw.githubusercontent.com/Boos4721/openwrt/master/package/kernel/linux/modules/netsupport.mk -o package/kernel/linux/modules/netsupport.mk
-curl -sfL https://raw.githubusercontent.com/Lstions/openwrt-boos/master/target/linux/ipq807x/patches-5.15/608-5.15-qca-nss-ssdk-delete-fdb-entry-using-netdev -o target/linux/ipq807x/patches-5.15/608-5.15-qca-nss-ssdk-delete-fdb-entry-using-netdev.patch
 
 function git_sparse_clone() (
           commitid="$1" rurl="$2" localdir="$3" && shift 3
@@ -30,6 +29,8 @@ git_sparse_clone 1f6a1e0d872d373d904cd4c16dec87ac3c03a042 "https://github.com/Bo
 cp -rf boos/target/linux/ipq807x target/linux/
 cp -rf boos/target/linux/generic target/linux/
 cp -rf boos/include/kernel-5.15.mk include/kernel-5.15
+
+curl -sfL https://raw.githubusercontent.com/Lstions/openwrt-boos/master/target/linux/ipq807x/patches-5.15/608-5.15-qca-nss-ssdk-delete-fdb-entry-using-netdev -o target/linux/ipq807x/patches-5.15/608-5.15-qca-nss-ssdk-delete-fdb-entry-using-netdev.patch
 
 sed -i 's/DEFAULT_PACKAGES +=/DEFAULT_PACKAGES += luci-app-turboacc/' target/linux/ipq807x/Makefile
 
